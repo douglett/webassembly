@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body onload="main()">
+
+Test Website
+
+
+<script type="text/javascript">
+
+function main() {
+	fetch("test.wasm")
+		.then(response => response.arrayBuffer())
+		.then(buffer => {
+			console.log("here");
+			var module = new WebAssembly.Module(buffer);
+			var mem = new WebAssembly.Memory({initial:1});
+			var memarr = new Uint32Array(mem.buffer);
+			var asm = new WebAssembly.Instance(module, {env: {memory: mem}} );
+			// do stuff
+			console.log(asm.exports)
+			console.log("calc:", asm.exports.calc());
+			asm.exports.set(15);
+			console.log("calc:", asm.exports.calc());
+			window.asm = asm;
+			window.mem = mem;
+		});
+}
+
+// var asm = new WebAssembly.Instance(module);
+
+</script>
+
+</body>
+</html>
