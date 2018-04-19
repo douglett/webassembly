@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body onload="main()">
+
+Test Website
+
+
+<script type="text/javascript">
+
+function main() {
+	var env = {
+		memory: new WebAssembly.Memory({ initial:1 }),
+		_abort: function(){}, 
+		_grow: function(){},
+		ntstring: function(stringptr) {
+			var mem8 = new Uint8Array(this.memory.buffer);
+			var s = "";
+			for (var i = stringptr; mem8[i] != 0; i++)
+				s += String.fromCharCode(mem8[i]);
+			return s;
+		}
+	};
+	WebAssembly.instantiateStreaming(fetch("test.wasm"), { env: env })
+	.then(obj => {
+		obj.env = env;
+		window.obj = obj;
+		console.log( "test", obj.instance.exports.test() );
+		console.log( "test2", String.fromCharCode(obj.instance.exports.test2()) );
+		
+		var stringptr = obj.instance.exports.test3();
+		var mem8 = new Uint8Array(obj.env.memory.buffer);
+		var s = "";
+		for (var i=stringptr; mem8[i] != 0; i++)
+			s += String.fromCharCode(mem8[i]);
+		console.log( "test3", s );
+
+		for (var i=0; i<3; i++)
+			console.log( "test4", obj.env.ntstring( obj.instance.exports.test4() ) );
+	});
+}
+
+</script>
+
+</body>
+</html>
