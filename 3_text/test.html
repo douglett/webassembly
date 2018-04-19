@@ -21,6 +21,9 @@ function main() {
 			for (var i = stringptr; mem8[i] != 0; i++)
 				s += String.fromCharCode(mem8[i]);
 			return s;
+		},
+		jprintf: function(stringptr) {
+			console.log("jprintf:", env.ntstring(stringptr));
 		}
 	};
 	WebAssembly.instantiateStreaming(fetch("test.wasm"), { env: env })

@@ -1,47 +1,84 @@
 (module
- (type $0 (func (result i32)))
- (type $1 (func (param i32 i32 i32) (result i32)))
- (type $2 (func (param i32) (result i32)))
+ (type $0 (func (param i32)))
+ (type $1 (func (param i32 i32)))
+ (type $2 (func (result i32)))
+ (type $3 (func (param i32 i32 i32) (result i32)))
+ (type $4 (func (param i32) (result i32)))
+ (import "env" "jprintf" (func $import$0 (param i32 i32)))
  (import "env" "memory" (memory $0 1))
  (table 0 anyfunc)
- (data (i32.const 4) "@)\00\00")
- (data (i32.const 272) "hello worldy\00")
- (data (i32.const 544) "hello \00")
+ (data (i32.const 4) "P)\00\00")
+ (data (i32.const 16) "asd\00")
+ (data (i32.const 288) "hello worldy\00")
+ (data (i32.const 560) "hello \00")
  (export "test" (func $0))
  (export "test2" (func $1))
  (export "test3" (func $2))
  (export "test4" (func $3))
- (func $0 (type $0) (result i32)
+ (func $0 (type $2) (result i32)
   (i32.const 101)
  )
- (func $1 (type $0) (result i32)
-  (i32.const 104)
+ (func $1 (type $2) (result i32)
+  (local $var$0 i32)
+  (block $label$0 i32
+   (i32.store offset=4
+    (i32.const 0)
+    (tee_local $var$0
+     (i32.sub
+      (i32.load offset=4
+       (i32.const 0)
+      )
+      (i32.const 16)
+     )
+    )
+   )
+   (i32.store offset=8
+    (get_local $var$0)
+    (i32.const 3)
+   )
+   (i64.store
+    (get_local $var$0)
+    (i64.const 8589934593)
+   )
+   (call $import$0
+    (i32.const 16)
+    (get_local $var$0)
+   )
+   (i32.store offset=4
+    (i32.const 0)
+    (i32.add
+     (get_local $var$0)
+     (i32.const 16)
+    )
+   )
+   (i32.const 104)
+  )
  )
- (func $2 (type $0) (result i32)
+ (func $2 (type $2) (result i32)
   (block $label$0 i32
    (drop
     (call $6
-     (i32.const 16)
-     (i32.const 272)
+     (i32.const 32)
+     (i32.const 288)
      (i32.const 256)
     )
    )
-   (i32.const 16)
+   (i32.const 32)
   )
  )
- (func $3 (type $0) (result i32)
+ (func $3 (type $2) (result i32)
   (block $label$0 i32
    (drop
     (call $4
-     (i32.const 288)
-     (i32.const 544)
+     (i32.const 304)
+     (i32.const 560)
      (i32.const 256)
     )
    )
-   (i32.const 288)
+   (i32.const 304)
   )
  )
- (func $4 (type $1) (param $var$0 i32) (param $var$1 i32) (param $var$2 i32) (result i32)
+ (func $4 (type $3) (param $var$0 i32) (param $var$1 i32) (param $var$2 i32) (result i32)
   (local $var$3 i32)
   (local $var$4 i32)
   (block $label$0 i32
@@ -102,7 +139,7 @@
    (get_local $var$0)
   )
  )
- (func $5 (type $2) (param $var$0 i32) (result i32)
+ (func $5 (type $4) (param $var$0 i32) (result i32)
   (local $var$1 i32)
   (local $var$2 i32)
   (local $var$3 i32)
@@ -219,7 +256,7 @@
    )
   )
  )
- (func $6 (type $1) (param $var$0 i32) (param $var$1 i32) (param $var$2 i32) (result i32)
+ (func $6 (type $3) (param $var$0 i32) (param $var$1 i32) (param $var$2 i32) (result i32)
   (block $label$0 i32
    (drop
     (call $7
@@ -231,7 +268,7 @@
    (get_local $var$0)
   )
  )
- (func $7 (type $1) (param $var$0 i32) (param $var$1 i32) (param $var$2 i32) (result i32)
+ (func $7 (type $3) (param $var$0 i32) (param $var$1 i32) (param $var$2 i32) (result i32)
   (local $var$3 i32)
   (local $var$4 i32)
   (block $label$0 i32
@@ -471,7 +508,7 @@
    )
   )
  )
- (func $8 (type $1) (param $var$0 i32) (param $var$1 i32) (param $var$2 i32) (result i32)
+ (func $8 (type $3) (param $var$0 i32) (param $var$1 i32) (param $var$2 i32) (result i32)
   (local $var$3 i32)
   (local $var$4 i32)
   (local $var$5 i32)

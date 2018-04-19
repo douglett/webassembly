@@ -1,12 +1,15 @@
 #include <webassembly.h>
 #include <string.h>
-// #include <stdio.h>	
+// #include <stdio.h>
+
+import void jprintf(const char* str);
 
 export int test() {
 	return 101;
 }
 
 export const char test2() {
+	jprintf("asd");
 	return 'h';
 }
 
