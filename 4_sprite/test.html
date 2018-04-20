@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body onload="main()">
+
+Test Website
+
+<canvas id="mycanvas"></canvas>
+
+
+<script type="text/javascript">
+
+function main() {
+	var canvas = document.getElementById("mycanvas");
+	canvas.width = 320;
+	canvas.height = 240;
+	var env = {
+		memory: new WebAssembly.Memory({ initial:21 }),
+		_abort: function() { console.error("_abort"); }, 
+		_grow:  function() { console.error("_grow"); },
+		ntstring: function(stringptr) {
+			var mem8 = new Uint8Array(this.memory.buffer);
+			var s = "";
+			for (var i = stringptr; mem8[i] != 0; i++)
+				s += String.fromCharCode(mem8[i]);
+			return s;
+		}
+	};
+	WebAssembly.instantiateStreaming(fetch("main.wasm"), { env: env })
+	.then(obj => {
+		obj.env = env;
+		window.obj = obj;
+
+		console.log( "test1", obj.instance.exports.test1() );
+		console.log( "getsprite", obj.instance.exports.getsprite(-1) );
+
+		var a = new Uint32Array( obj.env.memory.buffer, obj.instance.exports.getsprite(-1), 2*320*240 );
+		console.log(a[0], a[1], a[2], a[3]);
+
+		// var b = new Uint8Array( a, 2*4, 320*240*4 );
+		// canvas.getContext("2d").createImageData(canvas.width, canvas.height).data.set( b )
+		// console.log(b[0], b[1], b[2], b[3])
+	});
+}
+
+</script>
+
+
+<style type="text/css">
+#mycanvas {
+	border: 1px solid black;
+	display: block;
+}
+</style>
+
+
+</body>
+</html>
