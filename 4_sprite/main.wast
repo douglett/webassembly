@@ -1,8 +1,9 @@
 (module
  (type $0 (func (result i32)))
  (type $1 (func (param i32) (result i32)))
- (type $2 (func (param i32 i32) (result i32)))
- (type $3 (func (param f64 f64) (result f64)))
+ (type $2 (func (param i32 i32 i32 i32 i32) (result i32)))
+ (type $3 (func (param i32 i32) (result i32)))
+ (type $4 (func (param f64 f64) (result f64)))
  (import "env" "memory" (memory $0 21))
  (table 0 anyfunc)
  (data (i32.const 4) "@\d9\14\00")
@@ -11,9 +12,10 @@
  (data (i32.const 20) "@\00\00\00")
  (export "test1" (func $0))
  (export "getsprite" (func $1))
- (export "paint" (func $2))
+ (export "clearrect" (func $2))
+ (export "paint" (func $3))
  (func $0 (type $0) (result i32)
-  (i32.const 101)
+  (i32.const -16776961)
  )
  (func $1 (type $1) (param $var$0 i32) (result i32)
   (local $var$1 i32)
@@ -94,7 +96,171 @@
    )
   )
  )
- (func $2 (type $2) (param $var$0 i32) (param $var$1 i32) (result i32)
+ (func $2 (type $2) (param $var$0 i32) (param $var$1 i32) (param $var$2 i32) (param $var$3 i32) (param $var$4 i32) (result i32)
+  (local $var$5 i32)
+  (block $label$0 i32
+   (i32.store offset=4
+    (i32.const 0)
+    (tee_local $var$5
+     (i32.sub
+      (i32.load offset=4
+       (i32.const 0)
+      )
+      (i32.const 32)
+     )
+    )
+   )
+   (i32.store offset=24
+    (get_local $var$5)
+    (get_local $var$0)
+   )
+   (i32.store8 offset=23
+    (get_local $var$5)
+    (get_local $var$1)
+   )
+   (i32.store8 offset=22
+    (get_local $var$5)
+    (get_local $var$2)
+   )
+   (i32.store8 offset=21
+    (get_local $var$5)
+    (get_local $var$3)
+   )
+   (i32.store8 offset=20
+    (get_local $var$5)
+    (get_local $var$4)
+   )
+   (i32.store offset=16
+    (get_local $var$5)
+    (tee_local $var$4
+     (call $1
+      (i32.load offset=24
+       (get_local $var$5)
+      )
+     )
+    )
+   )
+   (block $label$1
+    (block $label$2
+     (br_if $label$2
+      (i32.eqz
+       (get_local $var$4)
+      )
+     )
+     (i32.store offset=12
+      (get_local $var$5)
+      (i32.or
+       (i32.or
+        (i32.or
+         (i32.shl
+          (i32.load8_u offset=23
+           (get_local $var$5)
+          )
+          (i32.const 24)
+         )
+         (i32.shl
+          (i32.load8_u offset=22
+           (get_local $var$5)
+          )
+          (i32.const 16)
+         )
+        )
+        (i32.shl
+         (i32.load8_u offset=21
+          (get_local $var$5)
+         )
+         (i32.const 8)
+        )
+       )
+       (i32.load8_u offset=20
+        (get_local $var$5)
+       )
+      )
+     )
+     (i32.store offset=8
+      (get_local $var$5)
+      (i32.const 2)
+     )
+     (block $label$3
+      (loop $label$4
+       (br_if $label$3
+        (i32.ge_u
+         (i32.load offset=8
+          (get_local $var$5)
+         )
+         (i32.add
+          (i32.mul
+           (i32.load
+            (tee_local $var$4
+             (i32.load offset=16
+              (get_local $var$5)
+             )
+            )
+           )
+           (i32.load offset=4
+            (get_local $var$4)
+           )
+          )
+          (i32.const 2)
+         )
+        )
+       )
+       (i32.store
+        (i32.add
+         (i32.load offset=16
+          (get_local $var$5)
+         )
+         (i32.shl
+          (tee_local $var$4
+           (i32.load offset=8
+            (get_local $var$5)
+           )
+          )
+          (i32.const 2)
+         )
+        )
+        (i32.load offset=12
+         (get_local $var$5)
+        )
+       )
+       (i32.store offset=8
+        (get_local $var$5)
+        (i32.add
+         (get_local $var$4)
+         (i32.const 1)
+        )
+       )
+       (br $label$4)
+      )
+      (unreachable)
+     )
+     (i32.store offset=28
+      (get_local $var$5)
+      (i32.const 0)
+     )
+     (br $label$1)
+    )
+    (i32.store offset=28
+     (get_local $var$5)
+     (i32.const 1)
+    )
+   )
+   (set_local $var$4
+    (i32.load offset=28
+     (get_local $var$5)
+    )
+   )
+   (i32.store offset=4
+    (i32.const 0)
+    (i32.add
+     (get_local $var$5)
+     (i32.const 32)
+    )
+   )
+   (get_local $var$4)
+  )
+ )
+ (func $3 (type $3) (param $var$0 i32) (param $var$1 i32) (result i32)
   (local $var$2 i32)
   (local $var$3 i32)
   (local $var$4 f64)
@@ -204,15 +370,15 @@
       )
       (loop $label$4
        (set_local $var$4
-        (call $3
-         (f64.convert_s/i32
+        (call $4
+         (f64.convert_u/i32
           (i32.load offset=4
            (i32.load offset=16
             (get_local $var$3)
            )
           )
          )
-         (f64.convert_s/i32
+         (f64.convert_u/i32
           (i32.load offset=4
            (i32.load offset=12
             (get_local $var$3)
@@ -253,15 +419,15 @@
          )
          (loop $label$7
           (set_local $var$4
-           (call $3
-            (f64.convert_s/i32
+           (call $4
+            (f64.convert_u/i32
              (i32.load
               (i32.load offset=16
                (get_local $var$3)
               )
              )
             )
-            (f64.convert_s/i32
+            (f64.convert_u/i32
              (i32.load
               (i32.load offset=12
                (get_local $var$3)
@@ -406,7 +572,7 @@
    (get_local $var$1)
   )
  )
- (func $3 (type $3) (param $var$0 f64) (param $var$1 f64) (result f64)
+ (func $4 (type $4) (param $var$0 f64) (param $var$1 f64) (result f64)
   (local $var$2 i64)
   (local $var$3 i64)
   (block $label$0 f64
