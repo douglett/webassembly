@@ -10,6 +10,7 @@
  (data (i32.const 12) "@\01\00\00")
  (data (i32.const 16) "\f0\00\00\00")
  (data (i32.const 20) "@\00\00\00")
+ (data (i32.const 24) "\01\00\00\00")
  (export "test1" (func $0))
  (export "getsprite" (func $1))
  (export "clearrect" (func $2))

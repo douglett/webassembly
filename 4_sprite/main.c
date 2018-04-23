@@ -5,6 +5,7 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 
 const int SCREEN_W = 320, SCREEN_H = 240, SPRITE_MAX = 64;
+const int BIT_ORDER = 1;
 uint screen[2 + SCREEN_W * SCREEN_H] = {0};
 uint sprites[64][2 + SPRITE_MAX * SPRITE_MAX] = {{0}};
 
@@ -23,8 +24,9 @@ export uint* getsprite(int id) {
 export int clearrect(int srcid, uchar r, uchar g, uchar b, uchar a) {
 	uint* sprite = getsprite(srcid);
 	if (sprite == NULL)  return 1;
-	uint col = (r<<24) | (g<<16) | (b<<8) | (a);
-	// uint col = (a<<24) | (b<<16) | (g<<8) | (r);  // reverse bit order
+	uint col;
+	if (BIT_ORDER == 1 )  col = (r<<24) | (g<<16) | (b<<8) | (a);
+	if (BIT_ORDER == -1)  col = (a<<24) | (b<<16) | (g<<8) | (r);  // reverse bit order
 	for (int i = 2; i < 2 + sprite[0] * sprite[1]; i++)
 		sprite[i] = col;
 	return 0;
