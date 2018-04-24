@@ -31,14 +31,14 @@ export uint test1() {
 
 export uint* getsprite(int id) {
 	if (id == -1) { 
-		screen[0] = screen[1] = 0;
-		screen[2] = SCREEN_W;  // force screen size
-		screen[3] = SCREEN_H;
+		spr_x(screen) = spr_y(screen) = 0;
+		spr_w(screen) = SCREEN_W;  // force screen size
+		spr_h(screen) = SCREEN_H;
 		return screen; 
 	}
 	if (id >= 0 && id < 64) {
-		sprites[id][2] = clamp( 0, sprites[id][2], 64 );  // clamp sprite sizes
-		sprites[id][3] = clamp( 0, sprites[id][3], 64 );
+		spr_w(sprites[id]) = clamp( 0, spr_w(sprites[id]), 64 );  // clamp sprite sizes
+		spr_h(sprites[id]) = clamp( 0, spr_h(sprites[id]), 64 );
 		return sprites[id];
 	}
 	return NULL;
@@ -66,7 +66,7 @@ export int paint(int srcid, int dstid) {
 	for (int y = 0; y < spr_h(src); y++)
 	for (int x = 0; x < spr_w(src); x++)
 		if (x + (int)spr_x(src) >= 0 && x + spr_x(src) < spr_w(dst) && y + (int)spr_y(src) >= 0 && y + spr_y(src) < spr_h(dst))
-			dst[4 + (spr_y(src) + y) * *spr_w(dst) + spr_x(src) + x] = src[4 + y * spr_w(src) + x];
+			dst[4 + (spr_y(src) + y) * spr_w(dst) + spr_x(src) + x] = src[4 + y * spr_w(src) + x];
 	return 0;  // OK
 }
 
