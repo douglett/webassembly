@@ -17,7 +17,7 @@ var vmlink = {
 	flip: function() {
 		// *slow* paint function!
 		// get memory
-		var b = new Uint8Array( obj.env.memory.buffer, obj.instance.exports.getsprite(-1), (2+320*240)*4 );
+		var b = new Uint8Array( obj.env.memory.buffer, obj.instance.exports.getsprite(-1), (4+320*240)*4 );
 		// console.log(b[0], b[1], b[2], b[3]);
 		// console.log(b[4], b[5], b[6], b[7]);
 		// console.log(b[8], b[9], b[10], b[11]);
@@ -31,10 +31,10 @@ var vmlink = {
 		var data = ctx.getImageData(0, 0, 320, 240);
 		for (var y=0; y<240; y++)
 		for (var x=0; x<320; x++) {
-			data.data[(y*320 + x)*4 + 0] = b[(2 + y*320 + x)*4 + 3];
-			data.data[(y*320 + x)*4 + 1] = b[(2 + y*320 + x)*4 + 2];
-			data.data[(y*320 + x)*4 + 2] = b[(2 + y*320 + x)*4 + 1];
-			data.data[(y*320 + x)*4 + 3] = b[(2 + y*320 + x)*4 + 0];
+			data.data[(y*320 + x)*4 + 0] = b[(4 + y*320 + x)*4 + 3];
+			data.data[(y*320 + x)*4 + 1] = b[(4 + y*320 + x)*4 + 2];
+			data.data[(y*320 + x)*4 + 2] = b[(4 + y*320 + x)*4 + 1];
+			data.data[(y*320 + x)*4 + 3] = b[(4 + y*320 + x)*4 + 0];
 		}
 		ctx.putImageData(data, 0, 0);
 	}
@@ -63,16 +63,17 @@ function main() {
 
 		obj.instance.exports.clearrect(-1, 255, 0, 0, 255);
 
-		var a = new Uint32Array( obj.env.memory.buffer, obj.instance.exports.getsprite(-1), 2*320*240 );
-		console.log( "int32:test", a[0], a[1], a[2].toString(16), a[3].toString(16), a[4].toString(16), a[5].toString(16) );
+		// var a = new Uint32Array( obj.env.memory.buffer, obj.instance.exports.getsprite(-1), 2*320*240 );
+		// console.log( "int32:test", a[0], a[1], a[2].toString(16), a[3].toString(16), a[4].toString(16), a[5].toString(16) );
 
-		var c = new Uint32Array( obj.env.memory.buffer, obj.instance.exports.getsprite(1), 2+64*64 );
+		var c = new Uint32Array( obj.env.memory.buffer, obj.instance.exports.getsprite(1), 4+64*64 );
 		console.log(c[0], c[1]);
-		c[0] = c[1] = 20;
+		c[2] = c[3] = 20;
 		obj.instance.exports.clearrect(1, 255, 255, 0, 255);
 
 		obj.instance.exports.paint(1, -1);
 		vmlink.flip();
+		// return;
 
 		var x = 0;
 		var y = 0;
@@ -84,7 +85,9 @@ function main() {
 			// if (x <= 0 || y <= 0 || x >= 320-20 || y >= 240-20)  dir = -dir;
 			if (x <= 0 || x >= 320-20)  dirx = -dirx;
 			if (y <= 0 || y >= 240-20)  diry = -diry;
-			obj.instance.exports.paintat(1, -1, x, y);
+			c[0] = x;  c[1] = y;
+			// obj.instance.exports.paint(1, -1);
+			obj.instance.exports.paintall();
 			vmlink.flip();			
 		}
 		setInterval(step, 16);
