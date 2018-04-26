@@ -17,12 +17,6 @@ uint sprites[64][4 + SPRITE_MAX * SPRITE_MAX] = {{0}};
 #define spr_h(data) data[3]
 #define spr_d(data) &data[4]
 
-// uint* spr_x(uint* data) { return &data[0]; }
-// uint* spr_y(uint* data) { return &data[1]; }
-// uint* spr_w(uint* data) { return &data[2]; }
-// uint* spr_h(uint* data) { return &data[3]; }
-// uint* spr_d(uint* data) { return &data[4]; }
-
 export uint test1() {
 	// return 101;
 	// return (255<<24) | (0<<16) | (0<<8) | 255;
