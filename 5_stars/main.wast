@@ -10,10 +10,10 @@
  (import "env" "jputs" (func $import$2 (param i32)))
  (import "env" "memory" (memory $0 1))
  (table 0 anyfunc)
- (data (i32.const 4) "\f0+\00\00")
+ (data (i32.const 4) "\80-\00\00")
  (data (i32.const 12) "d\00\00\00")
- (data (i32.const 1216) "hello world snake\00")
- (data (i32.const 1240) "\00\00\00\00\00\00\00\00")
+ (data (i32.const 1616) "hello world snake\00")
+ (data (i32.const 1640) "\00\00\00\00\00\00\00\00")
  (export "main" (func $0))
  (export "step" (func $1))
  (export "stars_count" (func $5))
@@ -44,7 +44,7 @@
     (get_local $var$1)
    )
    (call $import$2
-    (i32.const 1216)
+    (i32.const 1616)
    )
    (call $1)
    (i32.store offset=4
@@ -79,31 +79,27 @@
       (i32.const 16)
      )
     )
-    (i32.const 1065772646)
-   )
-   (i32.store offset=8
-    (get_local $var$1)
     (i32.const 0)
    )
    (block $label$1
     (loop $label$2
      (br_if $label$1
       (i32.gt_s
-       (i32.load offset=8
+       (i32.load offset=12
         (get_local $var$1)
        )
        (i32.const 99)
       )
      )
-     (i32.store offset=4
+     (i32.store offset=8
       (get_local $var$1)
       (tee_local $var$0
        (i32.add
-        (i32.mul
-         (i32.load offset=8
+        (i32.shl
+         (i32.load offset=12
           (get_local $var$1)
          )
-         (i32.const 12)
+         (i32.const 4)
         )
         (i32.const 16)
        )
@@ -118,8 +114,28 @@
        )
       )
       (f32.store offset=4
+       (get_local $var$1)
+       (tee_local $var$2
+        (f32.demote/f64
+         (f64.add
+          (f64.div
+           (f64.convert_s/i32
+            (i32.load offset=12
+             (i32.load offset=8
+              (get_local $var$1)
+             )
+            )
+           )
+           (f64.const 100)
+          )
+          (f64.const 1)
+         )
+        )
+       )
+      )
+      (f32.store offset=4
        (tee_local $var$0
-        (i32.load offset=4
+        (i32.load offset=8
          (get_local $var$1)
         )
        )
@@ -128,21 +144,17 @@
          (f32.load offset=4
           (get_local $var$0)
          )
-         (tee_local $var$2
-          (f32.load offset=12
-           (get_local $var$1)
-          )
-         )
+         (get_local $var$2)
         )
        )
       )
       (f32.store offset=8
        (get_local $var$0)
        (f32.mul
-        (get_local $var$2)
         (f32.load offset=8
          (get_local $var$0)
         )
+        (get_local $var$2)
        )
       )
       (block $label$4
@@ -160,7 +172,7 @@
           (tee_local $var$2
            (f32.abs
             (f32.load offset=8
-             (i32.load offset=4
+             (i32.load offset=8
               (get_local $var$1)
              )
             )
@@ -176,16 +188,16 @@
        )
       )
       (i32.store
-       (i32.load offset=4
+       (i32.load offset=8
         (get_local $var$1)
        )
        (i32.const 0)
       )
      )
-     (i32.store offset=8
+     (i32.store offset=12
       (get_local $var$1)
       (i32.add
-       (i32.load offset=8
+       (i32.load offset=12
         (get_local $var$1)
        )
        (i32.const 1)
@@ -271,6 +283,21 @@
        )
       )
      )
+     (set_local $var$0
+      (call $8)
+     )
+     (i32.store offset=12
+      (i32.load offset=12
+       (get_local $var$1)
+      )
+      (i32.add
+       (i32.rem_s
+        (get_local $var$0)
+        (i32.const 5)
+       )
+       (i32.const 1)
+      )
+     )
      (br $label$2)
     )
     (unreachable)
@@ -319,11 +346,11 @@
        (i32.eqz
         (i32.load
          (i32.add
-          (i32.mul
+          (i32.shl
            (i32.load offset=12
             (get_local $var$1)
            )
-           (i32.const 12)
+           (i32.const 4)
           )
           (i32.const 16)
          )
@@ -335,11 +362,11 @@
         (f32.load
          (i32.add
           (tee_local $var$0
-           (i32.mul
+           (i32.shl
             (i32.load offset=12
              (get_local $var$1)
             )
-            (i32.const 12)
+            (i32.const 4)
            )
           )
           (i32.const 20)
@@ -411,11 +438,11 @@
        (i32.eqz
         (i32.load
          (i32.add
-          (i32.mul
+          (i32.shl
            (i32.load offset=8
             (get_local $var$0)
            )
-           (i32.const 12)
+           (i32.const 4)
           )
           (i32.const 16)
          )
@@ -479,11 +506,11 @@
        (i32.eqz
         (i32.load
          (i32.add
-          (i32.mul
+          (i32.shl
            (i32.load offset=8
             (get_local $var$0)
            )
-           (i32.const 12)
+           (i32.const 4)
           )
           (i32.const 16)
          )
@@ -505,11 +532,11 @@
     (i32.store offset=12
      (get_local $var$0)
      (i32.add
-      (i32.mul
+      (i32.shl
        (i32.load offset=8
         (get_local $var$0)
        )
-       (i32.const 12)
+       (i32.const 4)
       )
       (i32.const 16)
      )
@@ -542,12 +569,12 @@
  (func $8 (type $4) (result i32)
   (local $var$0 i64)
   (block $label$0 i32
-   (i64.store offset=1240
+   (i64.store offset=1640
     (i32.const 0)
     (tee_local $var$0
      (i64.add
       (i64.mul
-       (i64.load offset=1240
+       (i64.load offset=1640
         (i32.const 0)
        )
        (i64.const 6364136223846793005)

@@ -11,6 +11,7 @@ void step();
 typedef struct Stars_t {
 	int alive;
 	float x, y;
+	int speed;
 } Stars;
 const int STARS_MAX=100;
 Stars starlist[STARS_MAX]={{.alive=0}};
@@ -41,6 +42,7 @@ void stars_make() {
 		s->alive = 1;
 		s->x = (rand() % 40) - 20;
 		s->y = (rand() % 40) - 20;
+		s->speed = (rand() % 5) + 1;
 	}
 }
 
@@ -52,10 +54,11 @@ void stars_drawall() {
 }
 
 void stars_move() {
-	float speed = 1.05;
+	// float speed = 1.05;
 	for (int i=0; i<STARS_MAX; i++) {
 		Stars* s = &starlist[i];
 		if (!s->alive)  continue;
+		float speed = s->speed / 100.0 + 1;
 		s->x *= speed;
 		s->y *= speed;
 		if (fabsf(s->x) >= 200 || fabsf(s->y) >= 200)  s->alive = 0;
