@@ -19,29 +19,36 @@ var vmos = {
 		bin: { },
 		ps: { }
 	},
-	flip: function() {
-		// *slow* paint function!
-		// get memory
-		var b = new Uint8Array( obj.env.memory.buffer, obj.instance.exports.getsprite(-1), (4+320*240)*4 );
-		// console.log(b[0], b[1], b[2], b[3]);
-		// console.log(b[4], b[5], b[6], b[7]);
-		// console.log(b[8], b[9], b[10], b[11]);
-		// get canvas
-		if (!this.canvas) {
-			this.canvas = document.getElementById("mycanvas");
-			this.canvas.width  = 320;
-			this.canvas.height = 240;
+	//-- environment functions
+	env: {
+		ntstring: function(stringptr) {
+			var mem8 = new Uint8Array(this.memory.buffer);
+			var s = "";
+			for (var i = stringptr; mem8[i] != 0; i++)
+				s += String.fromCharCode(mem8[i]);
+			return s;
+		},
+		jputs: function(ptr, type) {
+			type = Math.max( 0, Math.min( parseInt(type, 10), 2 ));
+			vmos.print( this.ntstring(ptr) );
+		},
+		env_cls: function() {
+			var ctx = vmos.canvas.getContext("2d");
+			ctx.fillStyle = "black";
+			ctx.fillRect(0, 0, vmos.canvas.width, vmos.canvas.height);
+		},
+		env_drawstar: function(x, y) {
+			var ctx = vmos.canvas.getContext("2d");
+			ctx.fillStyle = "white";
+			ctx.fillRect(vmos.canvas.width/2+x, vmos.canvas.height/2+y, 2, 2);
 		}
-		var ctx = this.canvas.getContext("2d");
-		var data = ctx.getImageData(0, 0, 320, 240);
-		for (var y=0; y<240; y++)
-		for (var x=0; x<320; x++) {
-			data.data[(y*320 + x)*4 + 0] = b[(4 + y*320 + x)*4 + 3];
-			data.data[(y*320 + x)*4 + 1] = b[(4 + y*320 + x)*4 + 2];
-			data.data[(y*320 + x)*4 + 2] = b[(4 + y*320 + x)*4 + 1];
-			data.data[(y*320 + x)*4 + 3] = b[(4 + y*320 + x)*4 + 0];
-		}
-		ctx.putImageData(data, 0, 0);
+	},
+	//-- os functions
+	init: function() {
+		this.canvas = document.getElementById("mycanvas");
+		this.canvas.width  = 320;
+		this.canvas.height = 240;
+		this.step();
 	},
 	print: function(str) {
 		console.log( str );
@@ -58,7 +65,7 @@ var vmos = {
 				})
 			);
 	},
-	run: function(bin) {
+	run: function(binname) {
 		// get unique id
 		var id;
 		for (id=1; id<9999; id++)
@@ -67,47 +74,28 @@ var vmos = {
 		// make
 		var env = {
 			memory: new WebAssembly.Memory({ initial:64 }),
-			_abort: function() { console.error("_abort"); }, 
-			_grow:  function() { console.error("_grow"); },
-			ntstring: function(stringptr) {
-				var mem8 = new Uint8Array(env.memory.buffer);
-				var s = "";
-				for (var i = stringptr; mem8[i] != 0; i++)
-					s += String.fromCharCode(mem8[i]);
-				return s;
-			},
-			jputs: function(ptr, type) {
-				type = Math.max( 0, Math.min( parseInt(type, 10), 2 ));
-				vmos.print( env.ntstring(ptr) );
-			}
+			_abort: function() { console.error("_abort"); },
+			_grow:  function() { console.error("_grow"); }
 		};
-		var ps = vmos.root.ps[id] = new WebAssembly.Instance( vmos.root.bin["main.wasm"], {env: env} );
+		Object.keys(vmos.env).forEach(v => env[v] = vmos.env[v].bind(env));
+		var ps = vmos.root.ps[id] = new WebAssembly.Instance( vmos.root.bin[binname], {env: env} );
 		// ps.env = env;
 		ps.memory = env.memory;
-		ps.exports.main(1, ["main.wasm"]);
+		ps.exports.main(1, [binname]);
+	},
+	step: function() {
+		Object.keys(vmos.root.ps).forEach(k => {
+			if (vmos.root.ps[k].exports.step)
+				vmos.root.ps[k].exports.step();
+		});
+		requestAnimationFrame(vmos.step.bind(vmos));
 	}
 };
 
-function main() {	
-	// var env = {
-	// 	memory: new WebAssembly.Memory({ initial:21 }),
-	// 	_abort: function() { console.error("_abort"); }, 
-	// 	_grow:  function() { console.error("_grow"); },
-	// 	ntstring: function(stringptr) {
-	// 		var mem8 = new Uint8Array(this.memory.buffer);
-	// 		var s = "";
-	// 		for (var i = stringptr; mem8[i] != 0; i++)
-	// 			s += String.fromCharCode(mem8[i]);
-	// 		return s;
-	// 	},
-	// 	jputs: function(ptr, type) {
-	// 		type = Math.max( 0, Math.min( parseInt(type, 10), 2 ));
-	// 		vmos.print( env.ntstring(ptr) );
-	// 	}
-	// };
-
+function main() {
+	vmos.init();
 	vmos.loadbins([ "main.wasm" ], function() {
-		vmos.run();
+		vmos.run("main.wasm");
 	});
 }
 
@@ -120,6 +108,7 @@ function main() {
 	display: block;
 	width: 640px;
 	height: 480px;
+	image-rendering: pixelated;
 }
 </style>
 
