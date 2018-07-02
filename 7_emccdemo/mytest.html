@@ -1,0 +1,34 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>mytest</title>
+</head>
+<body>
+
+<p>test page</p>
+
+<canvas id="mycanvas" width="320" height="240"></canvas>
+
+<script type="text/javascript">
+let bridge = {
+	canvas: null,
+	draw: function(type) {
+		let a = arguments;
+		console.log(type, arguments);
+		if (!this.canvas)  return;
+		if (!this.ctx)  this.ctx = this.canvas.getContext("2d");
+		switch (type) {
+		case "fillStyle":  this.ctx.fillStyle = a[1];  break;
+		case "fillRect":  this.ctx.fillRect(a[1], a[2], a[3], a[4]);  break;
+		default:  console.warn("unknown draw command:", type);
+		}
+	}
+};
+bridge.canvas = document.querySelector("#mycanvas");
+</script>
+<script type="text/javascript" src="game.out.js"></script>
+
+</body>
+</html>
